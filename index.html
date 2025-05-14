@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Guess the Number</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <h1>🔍 Guess the Number</h1>
+  <div id="range"></div>
+
+  <input type="number" id="guessInput" placeholder="Use your brain" />
+  <br/>
+  <button onclick="checkGuess()">Guess</button>
+  <button onclick="showHint()">Hint</button>
+
+  <div id="guessesLeft"></div>
+  <div id="message"></div>
+  <div id="hintBox"></div>
+
+  <footer>
+    Try to guess the number using logic and clues!
+  </footer>
+
+  <script src="script.js"></script>
+</body>
+</html>
