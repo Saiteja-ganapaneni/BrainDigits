@@ -1,34 +1,35 @@
 body {
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-  background: linear-gradient(to right, #232526, #414345);
+  background: linear-gradient(to right, #1e3c72, #2a5298);
   text-align: center;
   padding: 2em;
   margin: 0;
   color: #f5f5f5;
+  animation: fadeInBody 1.5s ease-in-out;
+}
+
+@keyframes fadeInBody {
+  from { opacity: 0; }
+  to { opacity: 1; }
 }
 
 h1 {
-  color: #00e676;
+  color: #ffeb3b;
   font-size: 3em;
   animation: fadeIn 2s ease-in-out;
   margin-top: 0;
+  text-shadow: 2px 2px 4px #000000;
 }
 
 @keyframes fadeIn {
-  from {
-    opacity: 0;
-    transform: translateY(-20px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
+  from { opacity: 0; transform: translateY(-20px); }
+  to { opacity: 1; transform: translateY(0); }
 }
 
 #range {
   font-size: 1.5em;
   margin-bottom: 20px;
-  color: #ffc107;
+  color: #00e5ff;
 }
 
 input[type="number"] {
@@ -36,36 +37,36 @@ input[type="number"] {
   font-size: 1.2em;
   border: 2px solid #ccc;
   border-radius: 8px;
-  width: 180px;
+  width: 200px;
   margin: 10px 0;
   transition: border 0.3s, box-shadow 0.3s;
 }
 
 input[type="number"]:focus {
-  border-color: #00e5ff;
-  box-shadow: 0 0 10px #00e5ff;
+  border-color: #4caf50;
+  box-shadow: 0 0 10px #4caf50;
   outline: none;
 }
 
 button {
-  padding: 10px 20px;
+  padding: 10px 25px;
   font-size: 1em;
   margin: 5px;
-  background-color: #2979ff;
+  background-color: #ff9800;
   color: white;
   border: none;
-  border-radius: 8px;
+  border-radius: 10px;
   cursor: pointer;
   transition: background-color 0.3s, transform 0.2s;
 }
 
 button:hover {
-  background-color: #448aff;
-  transform: scale(1.05);
+  background-color: #ffa726;
+  transform: scale(1.08);
 }
 
 #message {
-  font-size: 1.3em;
+  font-size: 1.4em;
   margin-top: 20px;
   color: #ffffff;
   min-height: 2em;
@@ -74,15 +75,15 @@ button:hover {
 
 #hintBox {
   margin-top: 20px;
-  color: #f8bbd0;
-  font-size: 1.1em;
+  color: #ffd54f;
+  font-size: 1.2em;
   transition: all 0.3s ease;
 }
 
 #guessesLeft {
   margin-top: 15px;
-  color: #4dd0e1;
-  font-size: 1.2em;
+  color: #b2ff59;
+  font-size: 1.3em;
   font-weight: bold;
 }
 
