@@ -3,45 +3,43 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Guess the Number</title>
+  <title>Number Nexus</title>
   <link rel="stylesheet" href="styles.css" />
 </head>
 <body>
-  <h1 class="animated-header">🔍 Guess the Number</h1>
-  <div id="range"></div>
-
-  <div class="container">
-    <div class="left">
-      <input type="number" id="guessInput" placeholder="Use your brain" />
-      <br/>
-      <button class="animated-button" onclick="checkGuess()">Guess</button>
-      <button class="animated-button" onclick="showHint()">Hint</button>
+  <div id="startScreen">
+    <h1 class="animated-header">🔍 Number Nexus</h1>
+    <div class="instructions-start">
+      <h2>📘 How to Play</h2>
+      <ul>
+        <li>You get 5 guesses per round.</li>
+        <li>Hints: Odd/Even, Range, Divisible by 3, Prime/Composite.</li>
+        <li>Timer: 2 minutes per round.</li>
+        <li>Click "Start Game" to begin!</li>
+      </ul>
     </div>
-
-    <button class="instructions-btn" onclick="toggleInstructions()">ℹ️</button>
-
-    <div class="right" id="instructionsPanel" style="display: none;">
-      <div class="instructions">
-        <button class="close-button" onclick="toggleInstructions()">← Back</button>
-        <h2>📘 Instructions</h2>
-        <ul>
-          <li>You have 5 guesses per round.</li>
-          <li>Click "Hint" to get a random clue (up to 3).</li>
-          <li>You’ll get up to 2 hints like “Too High” or “Too Low”.</li>
-          <li>The number is always within a random range of at least 100.</li>
-          <li>Try to deduce the number using logic and given clues!</li>
-        </ul>
-      </div>
-    </div>
+    <button class="start-btn" onclick="startGame()">Start Game</button>
   </div>
 
-  <div id="guessesLeft"></div>
-  <div id="message"></div>
-  <div id="hintBox"></div>
+  <div id="gameScreen" style="display:none;">
+    <div id="timer">⏱️ 2:00</div>
+    <h1 class="animated-header">🔍 Guess the Number</h1>
+    <div id="range"></div>
 
-  <footer>
-    Created by G. Sai Teja — Try to guess the number using logic and clues!
-  </footer>
+    <div class="container">
+      <div class="left">
+        <input type="number" id="guessInput" placeholder="Use your brain" />
+        <br/>
+        <button class="animated-button" onclick="checkGuess()">Guess</button>
+        <button class="animated-button" onclick="showHint()">Hint</button>
+      </div>
+    </div>
+
+    <div id="guessesLeft"></div>
+    <div id="message"></div>
+    <div id="hintBox"></div>
+    <footer>Created by G. Sai Teja</footer>
+  </div>
 
   <script src="script.js"></script>
 </body>
