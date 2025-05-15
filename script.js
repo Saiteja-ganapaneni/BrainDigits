@@ -1,115 +1,89 @@
-let secretNumber;
-let possibleNumbers = [];
-let guessCount = 0;
-let hintList = [];
-let shownHints = [];
-let highLowHintCount = 0;
-let minRange = 1;
-let maxRange = 100;
-const maxGuesses = 5;
-const maxHighLowHints = 3;
+let number, min, max;
+let guesses = 0;
+let maxGuesses = 5;
+let hintCount = 0;
+let hintGiven = new Set();
+let highLowHints = 0;
 
 function generateNumber() {
-  possibleNumbers = [];
-  guessCount = 0;
-  highLowHintCount = 0;
-  shownHints = [];
-
-  minRange = Math.floor(Math.random() * 100) + 101;
-  maxRange = minRange + 100 + Math.floor(Math.random() * 50);
-
-  const isEven = Math.random() > 0.5;
-  const divisibleBy3 = Math.random() > 0.5;
-  const primeHint = Math.random() > 0.5;
-
-  for (let i = minRange; i <= maxRange; i++) {
-    const evenCheck = isEven ? i % 2 === 0 : i % 2 !== 0;
-    const div3Check = divisibleBy3 ? i % 3 === 0 : i % 3 !== 0;
-    const primeCheck = primeHint ? isPrime(i) : !isPrime(i);
-
-    if (evenCheck && div3Check && primeCheck) {
-      possibleNumbers.push(i);
-    }
-  }
-
-  while (possibleNumbers.length > 5) {
-    possibleNumbers.splice(Math.floor(Math.random() * possibleNumbers.length), 1);
-  }
-
-  if (possibleNumbers.length === 0) {
-    generateNumber();
-    return;
-  }
-
-  secretNumber = possibleNumbers[Math.floor(Math.random() * possibleNumbers.length)];
-  hintList = generateHints(secretNumber);
-
-  document.getElementById("range").textContent = `Guess the number between ${minRange} and ${maxRange}`;
-  document.getElementById("message").textContent = "";
-  document.getElementById("hintBox").textContent = "";
-  document.getElementById("guessInput").value = "";
-  document.getElementById("guessesLeft").textContent = `🧠 Guesses left: ${maxGuesses - guessCount}`;
+  min = Math.floor(Math.random() * 100) + 100; // min >= 100
+  max = min + Math.floor(Math.random() * 50) + 5; // max = min + [5-55]
+  number = Math.floor(Math.random() * (max - min + 1)) + min;
+  document.getElementById('range').innerText = `🔢 Guess a number between ${min} and ${max}`;
+  guesses = 0;
+  hintCount = 0;
+  highLowHints = 0;
+  hintGiven.clear();
+  document.getElementById('message').innerText = '';
+  document.getElementById('hintBox').innerText = '';
+  document.getElementById('guessesLeft').innerText = `Guesses Left: ${maxGuesses - guesses}`;
+  document.getElementById('guessInput').value = '';
 }
 
+generateNumber();
+
 function checkGuess() {
-  const input = document.getElementById("guessInput");
-  const guess = Number(input.value);
-  const messageEl = document.getElementById("message");
+  const guess = parseInt(document.getElementById('guessInput').value);
+  if (isNaN(guess)) return;
+  guesses++;
 
-  if (!guess || guess < minRange || guess > maxRange) {
-    messageEl.textContent = `❗ Please enter a valid number between ${minRange} and ${maxRange}.`;
-    return;
-  }
-
-  guessCount++;
-  document.getElementById("guessesLeft").textContent = `🧠 Guesses left: ${maxGuesses - guessCount}`;
-
-  if (guess === secretNumber) {
-    messageEl.textContent = `🎉 Correct! The number was ${secretNumber}. Starting new game...`;
-    setTimeout(generateNumber, 3000);
+  if (guess === number) {
+    document.getElementById('message').innerHTML = '<span class="congrats">🎉 Congratulations! You guessed it right!</span>';
+    setTimeout(generateNumber, 2500);
   } else {
-    if (highLowHintCount < maxHighLowHints) {
-      messageEl.textContent = guess > secretNumber ? "🔽 Too high!" : "🔼 Too low!";
-      highLowHintCount++;
+    if (highLowHints < 2) {
+      const diffHint = guess > number ? '📉 Too High!' : '📈 Too Low!';
+      document.getElementById('message').innerText = diffHint;
+      highLowHints++;
     } else {
-      messageEl.textContent = "❌ Try again!";
+      document.getElementById('message').innerText = '❌ Incorrect guess.';
     }
-
-    if (guessCount >= maxGuesses) {
-      messageEl.textContent = `❌ You used all ${maxGuesses} guesses! The correct number was ${secretNumber}. Starting new game...`;
-      setTimeout(generateNumber, 3000);
+    if (guesses >= maxGuesses) {
+      document.getElementById('message').innerHTML = `💡 The correct number was ${number}. Starting next round...`;
+      setTimeout(generateNumber, 2500);
     }
   }
+  document.getElementById('guessesLeft').innerText = `Guesses Left: ${maxGuesses - guesses}`;
 }
 
 function showHint() {
-  const hintBox = document.getElementById("hintBox");
-  if (hintList.length > 0) {
-    const nextHint = hintList.shift();
-    shownHints.push(nextHint);
-  }
-  hintBox.innerHTML = shownHints.map(h => `💡 Hint: ${h}`).join("<br>");
-}
-
-function generateHints(number) {
   const hints = [];
-
-  const hintOptions = [
-    () => number % 2 === 0 ? "Even number" : "Odd number",
-    () => number % 3 === 0 ? "Divisible by 3" : "Not divisible by 3",
-    () => isPrime(number) ? "Prime number" : "Composite number"
-  ];
-
-  const shuffled = [];
-  while (hintOptions.length > 0) {
-    const i = Math.floor(Math.random() * hintOptions.length);
-    shuffled.push(hintOptions.splice(i, 1)[0]());
+  if (!hintGiven.has('parity')) {
+    hints.push(() => {
+      const isEven = number % 2 === 0;
+      return `🧮 The number is ${isEven ? 'Even' : 'Odd'}.`;
+    });
+  }
+  if (!hintGiven.has('div3')) {
+    hints.push(() => {
+      const isDiv3 = number % 3 === 0;
+      return `➗ The number is ${isDiv3 ? '' : 'not '}divisible by 3.`;
+    });
+  }
+  if (!hintGiven.has('prime')) {
+    hints.push(() => {
+      const isPrime = checkPrime(number);
+      return `🔍 The number is ${isPrime ? 'a Prime' : 'a Composite'} number.`;
+    });
   }
 
-  return shuffled;
+  if (hintCount >= 3 || hints.length === 0) return;
+  const index = Math.floor(Math.random() * hints.length);
+  const hintFn = hints[index];
+  const text = hintFn();
+
+  if (text.includes('Even') || text.includes('Odd')) hintGiven.add('parity');
+  if (text.includes('divisible')) hintGiven.add('div3');
+  if (text.includes('Prime') || text.includes('Composite')) hintGiven.add('prime');
+
+  const hintBox = document.getElementById('hintBox');
+  const hint = document.createElement('p');
+  hint.innerText = text;
+  hintBox.appendChild(hint);
+  hintCount++;
 }
 
-function isPrime(num) {
+function checkPrime(num) {
   if (num < 2) return false;
   for (let i = 2; i <= Math.sqrt(num); i++) {
     if (num % i === 0) return false;
@@ -117,4 +91,7 @@ function isPrime(num) {
   return true;
 }
 
-generateNumber();
+function toggleInstructions() {
+  const panel = document.getElementById('instructionsPanel');
+  panel.style.display = panel.style.display === 'none' ? 'block' : 'none';
+}
