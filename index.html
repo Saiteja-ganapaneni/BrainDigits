@@ -7,13 +7,33 @@
   <link rel="stylesheet" href="styles.css" />
 </head>
 <body>
-  <h1>🔍 Guess the Number</h1>
+  <h1 class="animated-header">🔍 Guess the Number</h1>
   <div id="range"></div>
 
-  <input type="number" id="guessInput" placeholder="Use your brain" />
-  <br/>
-  <button onclick="checkGuess()">Guess</button>
-  <button onclick="showHint()">Hint</button>
+  <div class="container">
+    <div class="left">
+      <input type="number" id="guessInput" placeholder="Use your brain" />
+      <br/>
+      <button class="animated-button" onclick="checkGuess()">Guess</button>
+      <button class="animated-button" onclick="showHint()">Hint</button>
+    </div>
+
+    <button class="instructions-btn" onclick="toggleInstructions()">ℹ️</button>
+
+    <div class="right" id="instructionsPanel" style="display: none;">
+      <div class="instructions">
+        <button class="close-button" onclick="toggleInstructions()">← Back</button>
+        <h2>📘 Instructions</h2>
+        <ul>
+          <li>You have 5 guesses per round.</li>
+          <li>Click "Hint" to get a random clue (up to 3).</li>
+          <li>You’ll get up to 2 hints like “Too High” or “Too Low”.</li>
+          <li>The number is always within a random range of at least 100.</li>
+          <li>Try to deduce the number using logic and given clues!</li>
+        </ul>
+      </div>
+    </div>
+  </div>
 
   <div id="guessesLeft"></div>
   <div id="message"></div>
