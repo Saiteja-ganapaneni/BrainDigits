@@ -7,6 +7,7 @@ let highLowHintCount = 0;
 let minRange = 1;
 let maxRange = 100;
 const maxGuesses = 5;
+const maxHighLowHints = 3;
 
 function generateNumber() {
   possibleNumbers = [];
@@ -67,7 +68,7 @@ function checkGuess() {
     messageEl.textContent = `🎉 Correct! The number was ${secretNumber}. Starting new game...`;
     setTimeout(generateNumber, 3000);
   } else {
-    if (highLowHintCount < 2) {
+    if (highLowHintCount < maxHighLowHints) {
       messageEl.textContent = guess > secretNumber ? "🔽 Too high!" : "🔼 Too low!";
       highLowHintCount++;
     } else {
