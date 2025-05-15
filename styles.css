@@ -3,22 +3,21 @@ body {
   color: #fff;
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
   text-align: center;
-  padding: 20px;
   margin: 0;
+  padding: 0;
 }
 
-h1.animated-header {
-  font-size: 3em;
-  margin-bottom: 20px;
-  animation: slideIn 1s ease-out;
+.animated-header {
+  font-size: 2.5em;
   color: #ffeb3b;
+  margin-top: 20px;
+  animation: fadeIn 1s ease-out;
 }
 
 .container {
   display: flex;
-  justify-content: space-between;
+  justify-content: center;
   margin-top: 20px;
-  flex-wrap: wrap;
 }
 
 .left {
@@ -26,19 +25,13 @@ h1.animated-header {
   padding: 10px;
 }
 
-.right {
-  flex: 1;
-  padding: 10px;
-  text-align: left;
-}
-
 input[type="number"] {
   padding: 10px;
   font-size: 16px;
-  width: 200px;
-  border-radius: 10px;
+  width: 180px;
+  border-radius: 8px;
   border: none;
-  box-shadow: 0 0 10px #aaa;
+  box-shadow: 0 0 8px #aaa;
   text-align: center;
 }
 
@@ -55,44 +48,19 @@ button.animated-button {
 }
 
 button.animated-button:hover {
-  transform: scale(1.1);
+  transform: scale(1.05);
   background-color: #45a049;
 }
 
-.instructions-btn {
-  position: absolute;
-  top: 10px;
-  right: 10px;
-  font-size: 16px;
-  background-color: #03a9f4;
-  color: white;
-  border: none;
-  padding: 6px 12px;
-  border-radius: 20px;
-  cursor: pointer;
-}
-
-.instructions {
-  background: #fff;
-  color: #333;
-  padding: 20px;
-  border-radius: 10px;
-  box-shadow: 0 0 10px #000;
-}
-
-.close-button {
-  background-color: #f44336;
-  color: white;
-  border: none;
-  padding: 5px 10px;
-  cursor: pointer;
-  float: right;
+#range, #guessesLeft {
+  font-size: 18px;
+  color: #ffe082;
+  margin: 10px;
 }
 
 #message {
-  margin-top: 20px;
+  margin-top: 15px;
   font-size: 20px;
-  animation: fadeIn 0.5s ease-in;
 }
 
 #hintBox p {
@@ -102,26 +70,6 @@ button.animated-button:hover {
   margin: 5px auto;
   width: fit-content;
   border-radius: 5px;
-  transition: all 0.3s ease;
-}
-
-.congrats {
-  color: #76ff03;
-  font-weight: bold;
-  font-size: 24px;
-  animation: bounce 1s ease infinite;
-}
-
-#range {
-  font-size: 18px;
-  margin: 15px 0;
-  color: #ffe082;
-}
-
-#guessesLeft {
-  font-size: 16px;
-  color: #00e5ff;
-  margin: 10px;
 }
 
 footer {
@@ -130,17 +78,45 @@ footer {
   color: #ccc;
 }
 
-@keyframes slideIn {
-  from { transform: translateY(-50px); opacity: 0; }
-  to { transform: translateY(0); opacity: 1; }
+.instructions-start {
+  background: #fff;
+  color: #333;
+  padding: 20px;
+  margin: 20px auto;
+  width: 90%;
+  max-width: 400px;
+  border-radius: 10px;
+}
+
+.start-btn {
+  font-size: 18px;
+  padding: 10px 25px;
+  background-color: #03a9f4;
+  border: none;
+  border-radius: 8px;
+  color: #fff;
+  cursor: pointer;
+  margin-top: 10px;
+}
+
+#timer {
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  font-size: 20px;
+  background-color: #000000aa;
+  padding: 5px 10px;
+  border-radius: 5px;
+  animation: pulse 2s infinite;
 }
 
 @keyframes fadeIn {
-  from { opacity: 0; }
-  to { opacity: 1; }
+  from { opacity: 0; transform: translateY(-20px); }
+  to { opacity: 1; transform: translateY(0); }
 }
 
-@keyframes bounce {
-  0%, 100% { transform: translateY(0); }
-  50% { transform: translateY(-10px); }
+@keyframes pulse {
+  0% { background-color: #000000aa; }
+  50% { background-color: #ff5722; }
+  100% { background-color: #000000aa; }
 }
