@@ -12,7 +12,7 @@ Created by **G. Sai Teja**.
    - Whether the number is **odd or even**
    - Whether it is **divisible by 3**
    - Whether it is a **prime or composite** number
-4. Only **2 "Too High/Too Low"** hints are allowed per game.
+4. Only **3 "Too High/Too Low"** hints are allowed per game.
 5. If you guess the number correctly, a new game starts automatically.
 6. If you exhaust all guesses, the correct number is revealed and a new game begins.
 
