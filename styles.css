@@ -1,122 +1,147 @@
 body {
-  background: linear-gradient(to right, #1e3c72, #2a5298);
-  color: #fff;
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-  text-align: center;
+  background: linear-gradient(to right, #336699, #66ccff);
   margin: 0;
   padding: 0;
-}
-
-.animated-header {
-  font-size: 2.5em;
-  color: #ffeb3b;
-  margin-top: 20px;
-  animation: fadeIn 1s ease-out;
-}
-
-.container {
-  display: flex;
-  justify-content: center;
-  margin-top: 20px;
-}
-
-.left {
-  flex: 1;
-  padding: 10px;
-}
-
-input[type="number"] {
-  padding: 10px;
-  font-size: 16px;
-  width: 180px;
-  border-radius: 8px;
-  border: none;
-  box-shadow: 0 0 8px #aaa;
   text-align: center;
+  color: #fff;
+  overflow-x: hidden;
 }
 
-button.animated-button {
-  padding: 10px 20px;
-  margin: 10px;
-  font-size: 16px;
-  border-radius: 8px;
-  background-color: #4caf50;
-  color: white;
+h1 {
+  font-size: 2.8em;
+  margin-top: 20px;
+  text-shadow: 2px 2px 6px #00000088;
+  animation: fadeInDown 1s ease forwards;
+}
+
+#startScreen, #gameScreen {
+  margin-top: 30px;
+}
+
+input[type="text"],
+input[type="number"] {
+  padding: 12px 15px;
+  font-size: 1.1em;
+  border-radius: 12px;
   border: none;
+  width: 220px;
+  text-align: center;
+  box-shadow: 0 0 8px #004466aa;
+  transition: box-shadow 0.3s ease;
+  color: #003344;
+}
+
+input[type="text"]:focus,
+input[type="number"]:focus {
+  outline: none;
+  box-shadow: 0 0 14px #33ccff;
+  background: #e0f7ff;
+}
+
+button {
+  padding: 12px 30px;
+  font-size: 1.2em;
+  margin: 10px 5px;
+  border: none;
+  border-radius: 12px;
+  background-color: #0088cc;
+  color: white;
   cursor: pointer;
-  transition: transform 0.2s, background-color 0.3s;
+  box-shadow: 0 0 8px #006699cc;
+  transition: background-color 0.3s, transform 0.2s;
 }
 
-button.animated-button:hover {
-  transform: scale(1.05);
-  background-color: #45a049;
+button:hover {
+  background-color: #005577;
+  transform: scale(1.1);
 }
 
-#range, #guessesLeft {
-  font-size: 18px;
-  color: #ffe082;
-  margin: 10px;
+.correct-guess {
+  background-color: #90ee90;
+  box-shadow: 0 0 12px #33cc33;
 }
 
-#message {
-  margin-top: 15px;
-  font-size: 20px;
+.congrats {
+  color: #ccff33;
+  font-weight: 700;
+  text-shadow: 0 0 5px #000000bb;
+  animation: glowPulse 2s ease-in-out infinite;
 }
 
 #hintBox p {
-  background-color: #ff9800;
-  color: white;
-  padding: 10px;
-  margin: 5px auto;
+  background-color: #004466dd;
+  color: #ccf0ff;
+  padding: 12px;
+  margin: 6px auto;
   width: fit-content;
-  border-radius: 5px;
-}
-
-footer {
-  margin-top: 40px;
-  font-size: 14px;
-  color: #ccc;
-}
-
-.instructions-start {
-  background: #fff;
-  color: #333;
-  padding: 20px;
-  margin: 20px auto;
-  width: 90%;
-  max-width: 400px;
-  border-radius: 10px;
-}
-
-.start-btn {
-  font-size: 18px;
-  padding: 10px 25px;
-  background-color: #03a9f4;
-  border: none;
   border-radius: 8px;
-  color: #fff;
-  cursor: pointer;
-  margin-top: 10px;
+  box-shadow: 0 0 8px #33ccffbb;
+  font-weight: 600;
+  animation: fadeInUp 0.7s ease forwards;
 }
 
-#timer {
-  position: absolute;
-  top: 10px;
-  left: 10px;
-  font-size: 20px;
-  background-color: #000000aa;
-  padding: 5px 10px;
-  border-radius: 5px;
-  animation: pulse 2s infinite;
+#message {
+  margin-top: 20px;
+  font-size: 1.3em;
+  min-height: 1.5em;
+  font-weight: 600;
+  text-shadow: 0 0 3px #000000aa;
 }
 
-@keyframes fadeIn {
-  from { opacity: 0; transform: translateY(-20px); }
-  to { opacity: 1; transform: translateY(0); }
+#guessesLeft, #range, #timer {
+  font-size: 1.2em;
+  font-weight: 600;
+  margin: 10px 0;
+  color: #cceeff;
+  text-shadow: 0 0 4px #003355aa;
 }
 
-@keyframes pulse {
-  0% { background-color: #000000aa; }
-  50% { background-color: #ff5722; }
-  100% { background-color: #000000aa; }
+#leaderboardContainer {
+  margin-top: 25px;
+  color: #ccf0ff;
+  font-weight: 600;
+  font-size: 1.15em;
+  text-shadow: 0 0 4px #001122cc;
+}
+
+#confettiCanvas {
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 9999;
+  pointer-events: none;
+}
+
+
+
+@keyframes fadeInDown {
+  0% {
+    opacity: 0;
+    transform: translateY(-30px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes fadeInUp {
+  0% {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes glowPulse {
+  0%, 100% {
+    text-shadow: 0 0 5px #ccff33;
+  }
+  50% {
+    text-shadow: 0 0 15px #ccff33;
+  }
 }
