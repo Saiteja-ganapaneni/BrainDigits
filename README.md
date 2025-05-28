@@ -1,26 +1,74 @@
-# 🔢 Number Nexus: A Logic-Based Guessing Game
+Number Nexus Game 🎯
+Developed by: G. Sai Teja
 
-**Number Nexus** is a web-based interactive number guessing game designed to challenge your logic and reasoning skills. With cleverly randomized clues and a limited number of guesses, this game offers a fun and brain-teasing experience!
+Overview
+Number Nexus is an interactive number guessing game where players try to guess a randomly generated number within a defined range. The game provides helpful hints and limits the number of guesses and time allowed. Players compete for a spot on the leaderboard by guessing the number in the least number of attempts.
 
-Created by **G. Sai Teja**.
+Features
+Guess a number between dynamically set ranges.
 
-## 🎮 How to Play
+Maximum of 5 guesses per game.
 
-1. A secret number is randomly selected between a dynamic range (minimum range always above 100).
-2. You're given up to **5 guesses** to figure out the correct number.
-3. You can click the **Hint** button to reveal clues:
-   - Whether the number is **odd or even**
-   - Whether it is **divisible by 3**
-   - Whether it is a **prime or composite** number
-4. Only **2 "Too High/Too Low"** hints are allowed per game.
-5. If you guess the number correctly, a new game starts automatically.
-6. If you exhaust all guesses, the correct number is revealed and a new game begins.
+Helpful hints (up to 3 per game) about the number:
 
-## ✨ Features
+Whether it is even or odd.
 
-- 🔀 Randomized range and clue logic every round
-- 🧠 Smart hints shown in random order
-- 🎯 Limit of 5 possible numbers ensures fairness
-- 🔢 Clear indicator of remaining guesses
-- 🎨 Beautiful animated UI with modern styling
-- 🔁 Automatically restartable for continuous play
+Divisibility by 3.
+
+Prime or composite.
+
+"Too high" or "Too low" feedback limited to the first 2 guesses to encourage strategic guessing.
+
+Timer countdown (2 minutes) for added challenge.
+
+Confetti celebration animation on winning.
+
+Persistent leaderboard stored in browser local storage:
+
+Displays top 3 players with the least guesses.
+
+Only winning players are recorded.
+
+Automatically updates and sorts by best performance.
+
+Clean and animated UI with pleasing color scheme.
+
+How to Play
+Enter your name and click Start Game.
+
+Guess the number within the given range.
+
+Use the Show Hint button to get up to 3 helpful hints.
+
+You have 5 guesses and 2 minutes to find the correct number.
+
+If you guess correctly, you’ll be celebrated and your score may be added to the leaderboard.
+
+Try to get your name to the top 3 on the leaderboard by winning in the fewest guesses!
+
+Technologies Used
+HTML for structure.
+
+CSS for styling and animations.
+
+JavaScript for game logic, timer, leaderboard management, and animations.
+
+File Structure
+index.html – Main HTML file with game UI.
+
+styles.css – Stylesheet with colors and animations.
+
+script.js – JavaScript logic for gameplay and leaderboard.
+
+README.md – This documentation file.
+
+Developer
+This project was created by:
+
+G. Sai Teja
+A passionate developer dedicated to creating interactive web games with clean UI and meaningful user experience.
+
+License
+This project is open for personal use and learning purposes.
+
+If you want me to help with hosting this game or adding more features, just ask!
