@@ -2,43 +2,29 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Number Nexus</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Number Nexus Game</title>
   <link rel="stylesheet" href="styles.css" />
 </head>
 <body>
+  <h1>🎯 Number Nexus Game</h1>
+
   <div id="startScreen">
-    <h1 class="animated-header">🔍 Number Nexus</h1>
-    <div class="instructions-start">
-      <h2>📘 How to Play</h2>
-      <ul>
-        <li>You get 5 guesses per round.</li>
-        <li>Hints: Odd/Even, Range, Divisible by 3, Prime/Composite.</li>
-        <li>Timer: 2 minutes per round.</li>
-        <li>Click "Start Game" to begin!</li>
-      </ul>
-    </div>
-    <button class="start-btn" onclick="startGame()">Start Game</button>
+    <input type="text" id="playerName" placeholder="Enter your name" />
+    <br /><br />
+    <button onclick="startGame()">Start Game</button>
+    <div id="leaderboardContainer"></div>
   </div>
 
-  <div id="gameScreen" style="display:none;">
-    <div id="timer">⏱️ 2:00</div>
-    <h1 class="animated-header">🔍 Guess the Number</h1>
-    <div id="range"></div>
-
-    <div class="container">
-      <div class="left">
-        <input type="number" id="guessInput" placeholder="Use your brain" />
-        <br/>
-        <button class="animated-button" onclick="checkGuess()">Guess</button>
-        <button class="animated-button" onclick="showHint()">Hint</button>
-      </div>
-    </div>
-
-    <div id="guessesLeft"></div>
-    <div id="message"></div>
+  <div id="gameScreen" style="display: none;">
+    <p id="range"></p>
+    <input type="number" id="guessInput" placeholder="Enter your guess" />
+    <button onclick="checkGuess()">Guess</button>
+    <button onclick="showHint()">Show Hint</button>
+    <p id="guessesLeft"></p>
     <div id="hintBox"></div>
-    <footer>Created by G. Sai Teja</footer>
+    <p id="timer"></p>
+    <div id="message"></div>
   </div>
 
   <script src="script.js"></script>
