@@ -2,280 +2,272 @@ let targetNumber, minRange, maxRange, guessCount, hints, tooHighLowCount;
 const maxGuesses = 5;
 let timerInterval, timerTime = 120;
 let gameOver = false;
+let roomId = "";
+let joinedPlayers = [];
+let pausedForRules = false;
+let currentHints = [];
 
 function startGame() {
-  const playerNameInput = document.getElementById("playerName");
-  const playerName = playerNameInput.value.trim();
+    const playerName = document.getElementById("playerName").value.trim();
+    const createRoomVal = document.getElementById("createRoomId").value.trim();
+    const joinRoomVal = document.getElementById("joinRoomId").value.trim();
+    if (!playerName) {
+        alert("Please enter your name to start the game.");
+        return;
+    }
+    if (createRoomVal) {
+        roomId = createRoomVal;
+        joinedPlayers = [playerName];
+        showRoomInfo("Created Room ID: <b>" + roomId + "</b><br>Players: " + joinedPlayers.map(n => `<span>${n}</span>`).join(" "));
+    } else if (joinRoomVal) {
+        roomId = joinRoomVal;
+        let rooms = JSON.parse(localStorage.getItem("gameRooms") || "{}");
+        if (!rooms[roomId]) { rooms[roomId] = []; }
+        if (!rooms[roomId].includes(playerName)) {
+            rooms[roomId].push(playerName);
+        }
+        localStorage.setItem("gameRooms", JSON.stringify(rooms));
+        joinedPlayers = rooms[roomId];
+        showRoomInfo("Joined Room ID: <b>" + roomId + "</b><br>Players: " + joinedPlayers.map(n => `<span>${n}</span>`).join(" "));
+    } else {
+        roomId = "";
+        joinedPlayers = [playerName];
+        showRoomInfo("");
+    }
+    document.getElementById("startScreen").style.display = "none";
+    document.getElementById("gameScreen").style.display = "flex";
+    document.getElementById("roomInfo").style.display = roomId ? "block" : "none";
+    resetGame();
+    startTimer(timerTime);
+    gameOver = false;
+    tooHighLowCount = 0;
+    document.getElementById("guessInput").value = "";
+    document.getElementById("guessInput").disabled = false;
+    document.getElementById("guessInput").classList.remove("correct-guess");
+    document.getElementById("message").textContent = "";
+    document.getElementById("hintBox").innerHTML = "";
+    updateLeaderboardDisplay();
+}
 
-  if (playerName.length === 0) {
-    alert("Please enter your name to start the game.");
-    return;
-  }
-
-  document.getElementById("startScreen").style.display = "none";
-  document.getElementById("gameScreen").style.display = "block";
-
-  resetGame();
-  startTimer(timerTime);
-  gameOver = false;
-  tooHighLowCount = 0;
-
-
-  document.getElementById("guessInput").value = "";
-  document.getElementById("guessInput").disabled = false;
-  document.getElementById("guessInput").classList.remove("correct-guess");
-  document.getElementById("message").textContent = "";
-  document.getElementById("hintBox").innerHTML = "";
-  updateLeaderboardDisplay();
+function showRoomInfo(msg) {
+    const infoDiv = document.getElementById("roomInfo");
+    if (msg) {
+        infoDiv.innerHTML = msg;
+        infoDiv.style.display = "block";
+    } else {
+        infoDiv.innerHTML = "";
+        infoDiv.style.display = "none";
+    }
 }
 
 function resetGame() {
-  targetNumber = Math.floor(Math.random() * 400 + 100);
-  const buffer = 10 + Math.floor(Math.random() * 30);
-  minRange = Math.floor((targetNumber - buffer) / 10) * 10;
-  maxRange = Math.ceil((targetNumber + buffer) / 10) * 10;
+    targetNumber = Math.floor(Math.random() * 400 + 100);
+    // Range diff 50–100
+    const rangeDiff = Math.floor(Math.random() * 51) + 50;
+    let bufferLow = Math.floor(rangeDiff / 2);
+    let bufferHigh = rangeDiff - bufferLow;
+    minRange = targetNumber - bufferLow;
+    maxRange = targetNumber + bufferHigh;
 
-  document.getElementById("range").textContent = `Number is between ${minRange} and ${maxRange}`;
-  guessCount = 0;
-  tooHighLowCount = 0;
+    document.getElementById("range").textContent = `Number is between ${minRange} and ${maxRange}`;
+    guessCount = 0;
+    tooHighLowCount = 0;
+    gameOver = false;
+    currentHints = shuffle([
+        targetNumber % 2 === 0 ? "It's an even number." : "It's an odd number.",
+        `It is ${targetNumber % 3 === 0 ? '' : 'not '}divisible by 3.`,
+        isPrime(targetNumber) ? "It is a prime number." : "It is a composite number."
+    ]);
+    document.getElementById("guessesLeft").textContent = `Guesses left: ${maxGuesses}`;
+    document.getElementById("message").textContent = "";
+    document.getElementById("hintBox").innerHTML = "";
 
-  hints = shuffle([
-    targetNumber % 2 === 0 ? "It's an even number." : "It's an odd number.",
-    `It is ${targetNumber % 3 === 0 ? '' : 'not '}divisible by 3.`,
-    isPrime(targetNumber) ? "It is a prime number." : "It is a composite number."
-  ]);
+    // Remove: Do NOT show any hint immediately upon game start
+    // showSpecificHint(0);
+}
 
-  document.getElementById("guessesLeft").textContent = `Guesses left: ${maxGuesses}`;
-  document.getElementById("message").textContent = "";
-  document.getElementById("hintBox").innerHTML = "";
+// Show a hint by index (0 = first hint, 1 = second, 2 = third)
+function showSpecificHint(idx) {
+    const hintBox = document.getElementById("hintBox");
+    if (idx < currentHints.length) {
+        while (hintBox.childElementCount <= idx) {
+            const hintEl = document.createElement("p");
+            hintEl.textContent = currentHints[hintBox.childElementCount];
+            hintBox.appendChild(hintEl);
+        }
+    }
 }
 
 function checkGuess() {
-  if (gameOver) return;
+    if (gameOver) return;
+    const guessInput = document.getElementById("guessInput");
+    const guess = parseInt(guessInput.value);
+    if (isNaN(guess)) return;
 
-  const guessInput = document.getElementById("guessInput");
-  const guess = parseInt(guessInput.value);
-  if (isNaN(guess)) return;
+    guessCount++;
 
-  guessCount++;
-  const messageBox = document.getElementById("message");
+    // Show hints only after each guess (max 3 hints)
+    if (guessCount <= 3) showSpecificHint(guessCount - 1);
 
-  if (guess === targetNumber) {
-    messageBox.innerHTML = `<span class="congrats">🎉 Congratulations! You guessed it!</span>`;
-    guessInput.classList.add("correct-guess");
-    guessInput.disabled = true;
-    stopTimer();
-    gameOver = true;
-    startConfetti();
-
-    saveWinner(guessCount);
-
-    setTimeout(() => {
-      stopConfetti();
-      endRound();
-    }, 4000);
-
-  } else {
-    if (tooHighLowCount < 2) {
-      messageBox.textContent = guess > targetNumber ? "Too high!" : "Too low!";
-      tooHighLowCount++;
+    const messageBox = document.getElementById("message");
+    if (guess === targetNumber) {
+        messageBox.innerHTML = `🎉 Congratulations! You guessed it!`;
+        guessInput.classList.add("correct-guess");
+        guessInput.disabled = true;
+        stopTimer();
+        gameOver = true;
+        showWinnerAnimation();
+        startConfetti();
+        saveWinner(guessCount);
+        setTimeout(() => {
+            stopWinnerAnimation();
+            stopConfetti();
+            endRound();
+        }, 3200);
     } else {
-      messageBox.textContent = "Try again!";
+        if (tooHighLowCount < 3) {
+            messageBox.textContent = guess > targetNumber ? "Too high!" : "Too low!";
+            tooHighLowCount++;
+        } else {
+            messageBox.textContent = "Try again!";
+        }
+        if (guessCount >= maxGuesses) {
+            guessInput.disabled = true;
+            stopTimer();
+            gameOver = true;
+            messageBox.innerHTML = `<div class="reveal-ans">❌ Out of guesses!<br>The number was <span>${targetNumber}</span></div>`;
+            setTimeout(endRound, 3000);
+        }
     }
-
-    if (guessCount >= maxGuesses) {
-      messageBox.textContent = `❌ Out of guesses! The number was ${targetNumber}`;
-      guessInput.disabled = true;
-      stopTimer();
-      gameOver = true;
-      setTimeout(endRound, 3000);
-    }
-  }
-
-  document.getElementById("guessesLeft").textContent = `Guesses left: ${maxGuesses - guessCount}`;
+    document.getElementById("guessesLeft").textContent = `Guesses left: ${maxGuesses - guessCount}`;
 }
 
-function showHint() {
-  if (hints.length > 0 && !gameOver) {
-    const hint = hints.shift();
-    const hintEl = document.createElement("p");
-    hintEl.textContent = hint;
-    document.getElementById("hintBox").appendChild(hintEl);
-  } else if (!gameOver) {
-    alert("No more hints available!");
-  }
+// Winner animation
+function showWinnerAnimation() {
+    const anim = document.getElementById('winnerAnim');
+    anim.style.display = "flex";
 }
+function stopWinnerAnimation() {
+    const anim = document.getElementById('winnerAnim');
+    anim.style.display = "none";
+}
+
+let timerPaused = false;
+let timerRemaining = 0;
 
 function startTimer(duration) {
-  let timeRemaining = duration;
-  const timerEl = document.getElementById("timer");
-  timerEl.textContent = `Time left: ${timeRemaining}s`;
-
-  clearInterval(timerInterval);
-  timerInterval = setInterval(() => {
-    timeRemaining--;
-    timerEl.textContent = `Time left: ${timeRemaining}s`;
-
-    if (timeRemaining <= 0) {
-      clearInterval(timerInterval);
-      timerEl.textContent = "Time's up!";
-      if (!gameOver) {
-        document.getElementById("guessInput").disabled = true;
-        document.getElementById("message").textContent = `⏰ Time's up! The number was ${targetNumber}`;
-        gameOver = true;
-        setTimeout(endRound, 3000);
-      }
-    }
-  }, 1000);
+    timerRemaining = duration;
+    const timerEl = document.getElementById("timer");
+    timerEl.textContent = `Time left: ${timerRemaining}s`;
+    clearInterval(timerInterval);
+    timerPaused = false;
+    timerInterval = setInterval(() => {
+        if (timerPaused) return;
+        timerRemaining--;
+        timerEl.textContent = `Time left: ${timerRemaining}s`;
+        if (timerRemaining <= 0) {
+            clearInterval(timerInterval);
+            timerEl.textContent = "Time's up!";
+            if (!gameOver) {
+                document.getElementById("guessInput").disabled = true;
+                document.getElementById("message").textContent = `⏰ Time's up! The number was ${targetNumber}`;
+                gameOver = true;
+                setTimeout(endRound, 2200);
+            }
+        }
+    }, 1000);
 }
 
 function stopTimer() {
-  clearInterval(timerInterval);
+    clearInterval(timerInterval);
+}
+
+function resetFullGame() {
+    resetGame();
+    startTimer(timerTime);
+    gameOver = false;
+    tooHighLowCount = 0;
+    document.getElementById("guessInput").value = "";
+    document.getElementById("guessInput").disabled = false;
+    document.getElementById("guessInput").classList.remove("correct-guess");
+    document.getElementById("message").textContent = "";
+    document.getElementById("hintBox").innerHTML = "";
+    updateLeaderboardDisplay();
+}
+
+function goBack() {
+    document.getElementById("gameScreen").style.display = "none";
+    document.getElementById("startScreen").style.display = "flex";
+    showRoomInfo("");
+    stopTimer();
 }
 
 function endRound() {
-  document.getElementById("startScreen").style.display = "block";
-  document.getElementById("gameScreen").style.display = "none";
-  updateLeaderboardDisplay();
+    document.getElementById("startScreen").style.display = "flex";
+    document.getElementById("gameScreen").style.display = "none";
+    updateLeaderboardDisplay();
+    stopTimer();
 }
 
 function isPrime(num) {
-  if (num <= 1) return false;
-  if (num <= 3) return true;
-  if (num % 2 === 0 || num % 3 === 0) return false;
-  for (let i = 5; i * i <= num; i += 6) {
-    if (num % i === 0 || num % (i + 2) === 0) return false;
-  }
-  return true;
+    if (num <= 1) return false;
+    if (num <= 3) return true;
+    if (num % 2 === 0 || num % 3 === 0) return false;
+    for (let i = 5; i * i <= num; i += 6) {
+        if (num % i === 0 || num % (i + 2) === 0) return false;
+    }
+    return true;
 }
 
 function shuffle(array) {
-  for (let i = array.length - 1; i > 0; i--) {
-    const j = Math.floor(Math.random() * (i + 1));
-    [array[i], array[j]] = [array[j], array[i]];
-  }
-  return array;
+    for (let i = array.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [array[i], array[j]] = [array[j], array[i]];
+    }
+    return array;
 }
 
-
-
 function saveWinner(guesses) {
-  const playerName = document.getElementById("playerName").value.trim();
-  if (playerName === "") return;
-
-  let leaderboard = JSON.parse(localStorage.getItem("numberNexusLeaderboard") || "[]");
-
-  
-  const existing = leaderboard.findIndex(entry => entry.name === playerName);
-  if (existing !== -1) {
-    if (guesses < leaderboard[existing].guesses) {
-      leaderboard[existing].guesses = guesses; 
+    const playerName = document.getElementById("playerName").value.trim();
+    if (playerName === "") return;
+    let leaderboard = JSON.parse(localStorage.getItem("numberNexusLeaderboard") || "[]");
+    const existing = leaderboard.findIndex(entry => entry.name === playerName);
+    if (existing !== -1) {
+        if (guesses < leaderboard[existing].guesses) {
+            leaderboard[existing].guesses = guesses;
+        }
+    } else {
+        leaderboard.push({ name: playerName, guesses: guesses });
     }
-  } else {
-    leaderboard.push({ name: playerName, guesses: guesses });
-  }
-
-
-  leaderboard.sort((a, b) => a.guesses - b.guesses);
-
- 
-  leaderboard = leaderboard.slice(0, 3);
-
-  localStorage.setItem("numberNexusLeaderboard", JSON.stringify(leaderboard));
+    leaderboard.sort((a, b) => a.guesses - b.guesses);
+    leaderboard = leaderboard.slice(0, 3);
+    localStorage.setItem("numberNexusLeaderboard", JSON.stringify(leaderboard));
 }
 
 function updateLeaderboardDisplay() {
-  const container = document.getElementById("leaderboardContainer");
-  let leaderboard = JSON.parse(localStorage.getItem("numberNexusLeaderboard") || "[]");
-
-  if (leaderboard.length === 0) {
-    container.innerHTML = "<h3>Leaderboard</h3><p>No winners yet</p>";
-    return;
-  }
-
-  let html = "<h3>Leaderboard</h3><ol>";
-  leaderboard.forEach(entry => {
-    html += `<li>${entry.name}: least guesses - ${entry.guesses}</li>`;
-  });
-  html += "</ol>";
-  container.innerHTML = html;
-}
-
-
-
-let confettiInterval;
-function startConfetti() {
-  const confettiCount = 100;
-  const colors = ["#ccff33", "#33ccff", "#ff66cc", "#ffcc33"];
-  const canvas = document.createElement("canvas");
-  canvas.id = "confettiCanvas";
-  canvas.width = window.innerWidth;
-  canvas.height = window.innerHeight;
-  document.body.appendChild(canvas);
-  const ctx = canvas.getContext("2d");
-
-  let confettiPieces = [];
-
-  function randomRange(min, max) {
-    return Math.random() * (max - min) + min;
-  }
-
-  function ConfettiPiece() {
-    this.x = randomRange(0, canvas.width);
-    this.y = randomRange(-canvas.height, 0);
-    this.size = randomRange(5, 10);
-    this.speed = randomRange(2, 5);
-    this.angle = randomRange(0, 2 * Math.PI);
-    this.color = colors[Math.floor(Math.random() * colors.length)];
-    this.tilt = randomRange(-10, 10);
-  }
-
-  ConfettiPiece.prototype.update = function () {
-    this.y += this.speed;
-    if (this.y > canvas.height) {
-      this.y = randomRange(-canvas.height, 0);
-      this.x = randomRange(0, canvas.width);
+    const container = document.getElementById("leaderboardContainer");
+    let leaderboard = JSON.parse(localStorage.getItem("numberNexusLeaderboard") || "[]");
+    if (leaderboard.length === 0) {
+        container.innerHTML = "<b>No winners yet</b>";
+        return;
     }
-  };
-
-  ConfettiPiece.prototype.draw = function () {
-    ctx.beginPath();
-    ctx.lineWidth = this.size / 2;
-    ctx.strokeStyle = this.color;
-    ctx.moveTo(this.x + this.tilt, this.y);
-    ctx.lineTo(this.x, this.y + this.size);
-    ctx.stroke();
-  };
-
-  for (let i = 0; i < confettiCount; i++) {
-    confettiPieces.push(new ConfettiPiece());
-  }
-
-  confettiInterval = setInterval(() => {
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
-    confettiPieces.forEach(piece => {
-      piece.update();
-      piece.draw();
+    let html = "<h3>Leaderboard</h3><ol>";
+    leaderboard.forEach(entry => {
+        html += `<li>${entry.name}: ${entry.guesses} guesses</li>`;
     });
-  }, 30);
+    html += "</ol>";
+    container.innerHTML = html;
 }
 
-function stopConfetti() {
-  clearInterval(confettiInterval);
-  const canvas = document.getElementById("confettiCanvas");
-  if (canvas) canvas.remove();
+// Rules modal logic
+function openRules() {
+    document.getElementById("rulesSection").style.display = "flex";
+    timerPaused = true;
+}
+function closeRules() {
+    document.getElementById("rulesSection").style.display = "none";
+    timerPaused = false;
 }
 
-
-window.onload = () => {
-  document.getElementById("startScreen").style.display = "block";
-  document.getElementById("gameScreen").style.display = "none";
-
- 
-  document.getElementById("message").textContent = "";
-  document.getElementById("hintBox").innerHTML = "";
-  document.getElementById("guessesLeft").textContent = "";
-  document.getElementById("timer").textContent = "";
-
-  updateLeaderboardDisplay();
-};
+function startConfetti() {}
+function stopConfetti() {}
