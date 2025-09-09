@@ -1,32 +1,70 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Number Nexus Game</title>
-  <link rel="stylesheet" href="styles.css" />
+    <meta charset="UTF-8">
+    <title>Number Nexus Game</title>
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://fonts.googleapis.com/css?family=Orbitron:wght@700&display=swap" rel="stylesheet">
 </head>
 <body>
-  <h1>🎯 Number Nexus Game</h1>
-
-  <div id="startScreen">
-    <input type="text" id="playerName" placeholder="Enter your name" />
-    <br /><br />
-    <button onclick="startGame()">Start Game</button>
-    <div id="leaderboardContainer"></div>
-  </div>
-
-  <div id="gameScreen" style="display: none;">
-    <p id="range"></p>
-    <input type="number" id="guessInput" placeholder="Enter your guess" />
-    <button onclick="checkGuess()">Guess</button>
-    <button onclick="showHint()">Show Hint</button>
-    <p id="guessesLeft"></p>
-    <div id="hintBox"></div>
-    <p id="timer"></p>
-    <div id="message"></div>
-  </div>
-
-  <script src="script.js"></script>
+    <div class="main-container">
+        <h1 class="title-neon">Number Nexus</h1>
+        <div id="startScreen" class="center-content">
+            <div class="section-spacing">
+                <input type="text" id="playerName" placeholder="Enter your name" autocomplete="off" class="input-neon" />
+            </div>
+            <div class="section-spacing">
+                <input type="text" id="createRoomId" placeholder="Create Room ID (optional)" class="input-neon" />
+            </div>
+            <div class="section-spacing">
+                <input type="text" id="joinRoomId" placeholder="Join Room ID (optional)" class="input-neon" />
+            </div>
+            <div class="section-spacing">
+                <button id="startBtn" class="btn-neon" onclick="startGame()">Start Game</button>
+            </div>
+        </div>
+        <div id="roomInfo" class="section-spacing" style="display:none;"></div>
+        <div id="gameScreen" class="center-content" style="display:none;">
+            <div class="game-row">
+                <button id="backBtn" class="btn-secondary" onclick="goBack()">Back</button>
+                <button id="resetBtn" class="btn-secondary" onclick="resetFullGame()">Reset</button>
+                <button id="rulesBtn" class="btn-secondary" onclick="openRules()">Rules</button>
+            </div>
+            <div id="rulesSection" class="modal-rules" style="display:none;">
+                <div class="rules-content">
+                    <h2>Game Rules &amp; How to Play</h2>
+                    <ul>
+                        <li>Guess the hidden number in the displayed range.</li>
+                        <li>You have <b>5 guesses</b> and <b>2 minutes</b> to find it.</li>
+                        <li><b>First hint</b> is shown immediately after game starts.</li>
+                        <li><b>Second hint</b> after your first guess.</li>
+                        <li><b>Third hint</b> after your second guess.</li>
+                        <li>"Too high"/"Too low" feedback is shown above the guessing box for your first 3 guesses.</li>
+                        <li>Only winning scores appear on the leaderboard.</li>
+                    </ul>
+                    <button class="btn-neon" onclick="closeRules()">Close</button>
+                </div>
+            </div>
+            <div id="range" class="section-spacing"></div>
+            <div id="hintBox" class="section-spacing"></div>
+            <div id="message" class="section-spacing"></div>
+            <div class="section-spacing">
+                <input type="number" id="guessInput" placeholder="Enter your guess" autocomplete="off" class="input-neon" />
+            </div>
+            <div class="section-spacing">
+                <button onclick="checkGuess()" class="btn-neon">Submit Guess</button>
+            </div>
+            <div id="guessesLeft" class="section-spacing"></div>
+            <div id="timer" class="timer-glow"></div>
+            <div id="leaderboardContainer" class="section-spacing"></div>
+        </div>
+        <div id="winnerAnim" class="winner-anim" style="display:none;">
+            <span class="checkmark">&#10004;</span>
+            <div class="winner-msg">Correct!</div>
+        </div>
+        <div class="glow-anim"></div>
+        <canvas id="confettiCanvas"></canvas>
+    </div>
+    <script src="script.js"></script>
 </body>
 </html>
