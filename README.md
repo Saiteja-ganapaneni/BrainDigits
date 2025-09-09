@@ -18,7 +18,7 @@ No special setup needed — runs in any modern web browser.
 
 ### Installation
 
-1. Clone the repository:git clone
+1. Clone the repository:git clone https://github.com/Saiteja-ganapaneni/BrainDigits.git
 
    2. Open the project folder.
 3. Run `index.html` in a browser.
